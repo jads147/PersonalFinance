@@ -32,45 +32,99 @@
 
         <div class="main-content">
             <div class="form-section">
-                <h2>Neue Transaktion</h2>
-                <form id="transactionForm">
-                    <div class="form-group">
-                        <label for="description">Beschreibung</label>
-                        <input type="text" id="description" required>
-                    </div>
+                <div class="form-tabs">
+                    <button type="button" class="tab-btn active" data-tab="one-time">Einmalig</button>
+                    <button type="button" class="tab-btn" data-tab="recurring">Monatlich</button>
+                </div>
 
-                    <div class="form-group">
-                        <label for="amount">Betrag (€)</label>
-                        <input type="number" id="amount" step="0.01" required>
-                    </div>
+                <div class="tab-content active" id="one-time-tab">
+                    <h2>Neue Transaktion</h2>
+                    <form id="transactionForm">
+                        <div class="form-group">
+                            <label for="description">Beschreibung</label>
+                            <input type="text" id="description" required>
+                        </div>
 
-                    <div class="form-group">
-                        <label for="type">Typ</label>
-                        <select id="type" required>
-                            <option value="income">Einnahme</option>
-                            <option value="expense">Ausgabe</option>
-                        </select>
-                    </div>
+                        <div class="form-group">
+                            <label for="amount">Betrag (€)</label>
+                            <input type="number" id="amount" step="0.01" required>
+                        </div>
 
-                    <div class="form-group">
-                        <label for="category">Kategorie</label>
-                        <select id="category" required>
-                            <option value="Gehalt">Gehalt</option>
-                            <option value="Einkäufe">Einkäufe</option>
-                            <option value="Miete">Miete</option>
-                            <option value="Transport">Transport</option>
-                            <option value="Unterhaltung">Unterhaltung</option>
-                            <option value="Sonstiges">Sonstiges</option>
-                        </select>
-                    </div>
+                        <div class="form-group">
+                            <label for="type">Typ</label>
+                            <select id="type" required>
+                                <option value="income">Einnahme</option>
+                                <option value="expense">Ausgabe</option>
+                            </select>
+                        </div>
 
-                    <div class="form-group">
-                        <label for="date">Datum</label>
-                        <input type="date" id="date" required>
-                    </div>
+                        <div class="form-group">
+                            <label for="category">Kategorie</label>
+                            <select id="category" required>
+                                <option value="Gehalt">Gehalt</option>
+                                <option value="Einkäufe">Einkäufe</option>
+                                <option value="Miete">Miete</option>
+                                <option value="Transport">Transport</option>
+                                <option value="Unterhaltung">Unterhaltung</option>
+                                <option value="Sonstiges">Sonstiges</option>
+                            </select>
+                        </div>
 
-                    <button type="submit" class="btn-primary">Transaktion hinzufügen</button>
-                </form>
+                        <div class="form-group">
+                            <label for="date">Datum</label>
+                            <input type="date" id="date" required>
+                        </div>
+
+                        <button type="submit" class="btn-primary">Transaktion hinzufügen</button>
+                    </form>
+                </div>
+
+                <div class="tab-content" id="recurring-tab">
+                    <h2>Monatliche Transaktion</h2>
+                    <form id="recurringForm">
+                        <div class="form-group">
+                            <label for="recurringDescription">Beschreibung</label>
+                            <input type="text" id="recurringDescription" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="recurringAmount">Betrag (€)</label>
+                            <input type="number" id="recurringAmount" step="0.01" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="recurringType">Typ</label>
+                            <select id="recurringType" required>
+                                <option value="income">Einnahme</option>
+                                <option value="expense">Ausgabe</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="recurringCategory">Kategorie</label>
+                            <select id="recurringCategory" required>
+                                <option value="Gehalt">Gehalt</option>
+                                <option value="Einkäufe">Einkäufe</option>
+                                <option value="Miete">Miete</option>
+                                <option value="Transport">Transport</option>
+                                <option value="Unterhaltung">Unterhaltung</option>
+                                <option value="Sonstiges">Sonstiges</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="dayOfMonth">Tag im Monat</label>
+                            <input type="number" id="dayOfMonth" min="1" max="31" value="1" required>
+                        </div>
+
+                        <button type="submit" class="btn-primary">Monatliche Transaktion hinzufügen</button>
+                    </form>
+
+                    <div class="recurring-list">
+                        <h3>Aktive monatliche Transaktionen</h3>
+                        <div id="recurringList"></div>
+                    </div>
+                </div>
             </div>
 
             <div class="transactions-section">

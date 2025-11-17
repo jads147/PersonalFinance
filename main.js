@@ -16,7 +16,11 @@ function loadData() {
   } catch (error) {
     console.error('Fehler beim Laden der Daten:', error);
   }
-  return { transactions: [], categories: ['Gehalt', 'Einkäufe', 'Miete', 'Transport', 'Unterhaltung', 'Sonstiges'] };
+  return {
+    transactions: [],
+    recurringTransactions: [],
+    categories: ['Gehalt', 'Einkäufe', 'Miete', 'Transport', 'Unterhaltung', 'Sonstiges']
+  };
 }
 
 // Daten speichern
@@ -90,4 +94,69 @@ ipcMain.handle('update-transaction', (event, updatedTransaction) => {
     return saveData(data);
   }
   return false;
+});
+
+// Wiederkehrende Transaktionen
+ipcMain.handle('save-recurring', (event, recurring) => {
+  const data = loadData();
+  if (!data.recurringTransactions) {
+    data.recurringTransactions = [];
+  }
+  recurring.id = Date.now().toString();
+  data.recurringTransactions.push(recurring);
+  return saveData(data) ? recurring : null;
+});
+
+ipcMain.handle('delete-recurring', (event, id) => {
+  const data = loadData();
+  if (!data.recurringTransactions) {
+    data.recurringTransactions = [];
+  }
+  data.recurringTransactions = data.recurringTransactions.filter(t => t.id !== id);
+  return saveData(data);
+});
+
+ipcMain.handle('process-recurring', () => {
+  const data = loadData();
+  if (!data.recurringTransactions) {
+    data.recurringTransactions = [];
+  }
+
+  const now = new Date();
+  const currentMonth = now.getMonth();
+  const currentYear = now.getFullYear();
+
+  let added = 0;
+
+  data.recurringTransactions.forEach(recurring => {
+    // Prüfen ob für diesen Monat schon eine Transaktion existiert
+    const alreadyProcessed = data.transactions.some(t => {
+      const tDate = new Date(t.date);
+      return t.recurringId === recurring.id &&
+             tDate.getMonth() === currentMonth &&
+             tDate.getFullYear() === currentYear;
+    });
+
+    if (!alreadyProcessed) {
+      // Neue Transaktion für diesen Monat erstellen
+      const transaction = {
+        id: Date.now().toString() + '_' + Math.random(),
+        description: recurring.description,
+        amount: recurring.amount,
+        type: recurring.type,
+        category: recurring.category,
+        date: new Date(currentYear, currentMonth, recurring.dayOfMonth || 1).toISOString(),
+        recurringId: recurring.id,
+        isRecurring: true
+      };
+      data.transactions.push(transaction);
+      added++;
+    }
+  });
+
+  if (added > 0) {
+    saveData(data);
+  }
+
+  return added;
 });
